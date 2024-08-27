@@ -6,20 +6,18 @@
 #ifndef PTR_TOOLS_KEYBOARDLISTENER_H
 #define PTR_TOOLS_KEYBOARDLISTENER_H
 
-#include "../event/KeyPressEvent.h"
-#include "../event/KeyReleaseEvent.h"
-#include "../event/KeyPressedEvent.h"
+#include "../event/KeyboardEvent.h"
 
 class KeyboardListener {
 public:
     //键盘按下
-    virtual void onPress(const KeyPressEvent &e) = 0;
+    virtual void onPress(const KeyboardEvent &e) = 0;
 
     //键盘释放
-    virtual void onRelease(const KeyReleaseEvent &e) = 0;
+    virtual void onRelease(const KeyboardEvent &e) = 0;
 
     //键盘按了
-    virtual void onPressed(const KeyPressedEvent &e) = 0;
+    virtual void onPressed(const KeyboardEvent &e) = 0;
 };
 
 #endif //PTR_TOOLS_KEYBOARDLISTENER_H

@@ -26,19 +26,19 @@ public:
         switch (event.getEventType()) {
             case KeyboardEventType::PRESS: {
                 // 类型为按下
-                if (auto e = dynamic_cast<const KeyPressEvent*>(&event)) for (KeyboardListener *listener : listeners) listener->onPress(*e);
+                for (KeyboardListener *listener : listeners) listener->onPress(event);
                 break;
             }
 
             case KeyboardEventType::RELEASE: {
                 //类型为松开
-                if (auto e = dynamic_cast<const KeyReleaseEvent*>(&event)) for (KeyboardListener *listener : listeners) listener->onRelease(*e);
+                for (KeyboardListener *listener : listeners) listener->onRelease(event);
                 break;
             }
 
             case KeyboardEventType::PRESSED: {
                 //类型为按了
-                if (auto e = dynamic_cast<const KeyPressedEvent*>(&event)) for (KeyboardListener *listener : listeners) listener->onPressed(*e);
+                for (KeyboardListener *listener : listeners) listener->onPressed(event);
                 break;
             }
         }
