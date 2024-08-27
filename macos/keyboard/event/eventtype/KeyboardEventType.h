@@ -3,8 +3,8 @@
 // 键盘事件类型
 //
 
-#ifndef PTR_TOOLS_KEYBOARDEVENTTYPE_H
-#define PTR_TOOLS_KEYBOARDEVENTTYPE_H
+#ifndef KEYBOARD_EVENT_TYPE_H
+#define KEYBOARD_EVENT_TYPE_H
 
 enum class KeyboardEventType{
     PRESS,          //按下(id:0)
@@ -12,4 +12,4 @@ enum class KeyboardEventType{
     PRESSED     //按了(id:2)
 };
 
-#endif //PTR_TOOLS_KEYBOARDEVENTTYPE_H
+#endif //KEYBOARD_EVENT_TYPE_H

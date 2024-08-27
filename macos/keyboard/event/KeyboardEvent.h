@@ -2,10 +2,12 @@
 // Created by 2333 xiang on 2024/8/26.
 //  按键事件
 //
-#include "../KeyboardEventType.h"
+
 
 #ifndef PTR_TOOLS_KEYBOARDEVENT_H
 #define PTR_TOOLS_KEYBOARDEVENT_H
+
+#include "eventtype/KeyboardEventType.h"
 
 class KeyboardEvent {
 public:

@@ -13,10 +13,9 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(ptr_tools main.cpp Example.h macos/pointer/PointerEventType.h macos/keyboard/KeyboardEventType.h macos/pointer/PointerMoveEventType.h macos/GlobalScreen.h macos/keyboard/event/KeyboardEvent.h macos/keyboard/listener/KeyboardListener.h macos/keyboard/KeyEventDispatcher.h)
+add_executable(ptr_tools main.cpp Example.h macos/pointer/event/eventtype/PointerEventType.h macos/keyboard/event/eventtype/KeyboardEventType.h macos/GlobalScreen.h macos/keyboard/event/KeyboardEvent.h macos/keyboard/listener/KeyboardListener.h macos/keyboard/dispatcher/KeyEventDispatcher.h macos/GlobalScreen.cpp macos/pointer/event/eventtype/PointerWheelEventType.h macos/pointer/event/PointerEvent.h macos/pointer/listener/PointerListener.h macos/pointer/dispatcher/PointerEventDispatcher.h macos/pointer/Coordinate.h macos/pointer/event/PointerMotionEvent.h macos/pointer/listener/PointerMotionListener.h)
 target_link_libraries(ptr_tools
         Qt::Core
         Qt::Gui
         Qt::Widgets
         )
-

@@ -18,6 +18,8 @@ public:
 
     //键盘按了
     virtual void onPressed(const KeyboardEvent &e) = 0;
+
+    virtual ~KeyboardListener()=default;
 };
 
 #endif //PTR_TOOLS_KEYBOARDLISTENER_H
