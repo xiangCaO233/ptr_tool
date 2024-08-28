@@ -8,6 +8,7 @@
 #include <ApplicationServices/ApplicationServices.h>
 #include "keyboard/dispatcher/KeyEventDispatcher.h"
 #include "pointer/dispatcher/PointerEventDispatcher.h"
+#include "pointer/dispatcher/WheelEventDispatcher.h"
 #include <iostream>
 #include <thread>
 
@@ -16,8 +17,8 @@ class GlobalScreen {
 public:
 
     static GlobalScreen globalScreenVal;
-    static std::vector<int> pressCode;
     static std::vector<int> controlsCode;
+    static std::vector<int> dragsCode;
 
     //开始监听
     static void startListen() {
@@ -112,8 +113,20 @@ public:
         pointerEventDispatcher.removePointerMotionListener(&listener);
     }
 
+    //添加鼠标指针监听器
+    void addPointerWheelListener(PointerWheelListener &listener) {
+        wheelEventDispatcher.addPointerWheelListener(listener);
+    }
+
+    //删除鼠标指针监听器
+    void removePointerWheelListener(PointerWheelListener &listener) {
+        wheelEventDispatcher.removePointerWheelListener(&listener);
+    }
+
 
 private:
+    //滚轮滚动事件分派器
+    WheelEventDispatcher wheelEventDispatcher;
     //鼠标指针事件分派器
     PointerEventDispatcher pointerEventDispatcher;
     //键盘事件分派器
@@ -142,10 +155,10 @@ private:
 
         int64_t scrollPhase = CGEventGetIntegerValueField(event, kCGScrollWheelEventScrollPhase);
         double fixedPtDeltaY = CGEventGetDoubleValueField(event, kCGScrollWheelEventFixedPtDeltaAxis1);
-        double pointDeltaY = CGEventGetDoubleValueField(event, kCGScrollWheelEventPointDeltaAxis1);
+        //double pointDeltaY = CGEventGetDoubleValueField(event, kCGScrollWheelEventPointDeltaAxis1);
 
         double fixedPtDeltaX = CGEventGetDoubleValueField(event, kCGScrollWheelEventFixedPtDeltaAxis2);
-        double pointDeltaX = CGEventGetDoubleValueField(event, kCGScrollWheelEventPointDeltaAxis2);
+        //double pointDeltaX = CGEventGetDoubleValueField(event, kCGScrollWheelEventPointDeltaAxis2);
         // 累积滚动量
         static double accumulatedDeltaY = 0.0;
         static double accumulatedDeltaX = 0.0;
@@ -154,24 +167,12 @@ private:
             case kCGEventKeyDown: {
                 //按键按下
                 sendKeyEvent(self, keyCode, KeyboardEventType::PRESS);
-                //防止按下列表反复增加
-                auto it = std::find(pressCode.begin(), pressCode.end(), keyCode);
-                if (it == pressCode.end()) {
-                    pressCode.push_back(keyCode);
-                }
                 break;
             }
             case kCGEventKeyUp: {
                 //按键释放
                 sendKeyEvent(self, keyCode, KeyboardEventType::RELEASE);
-                //检查是否按完
-                auto it = std::find(pressCode.begin(), pressCode.end(), keyCode);
-                if (it != pressCode.end()) {
-                    long index = distance(pressCode.begin(), it);
-                    //从列表按下列表中删除并发送按了（按完-按下+松开）事件
-                    pressCode.erase(pressCode.begin() + index, pressCode.begin() + index + 1);
-                    sendKeyEvent(self, keyCode, KeyboardEventType::PRESSED);
-                }
+                sendKeyEvent(self, keyCode, KeyboardEventType::PRESSED);
             }
             case kCGEventFlagsChanged: {
                 //控制键状态改变
@@ -187,6 +188,7 @@ private:
                     controlsCode.push_back(keyCode);
                 } else {
                     //控制键释放
+
                     auto it = std::find(controlsCode.begin(), controlsCode.end(), keyCode);
                     //在控制键按下列表中查询（防止常规按键复触发）
                     if (it != controlsCode.end()) {
@@ -196,6 +198,7 @@ private:
                         sendKeyEvent(self, keyCode, KeyboardEventType::PRESSED);
                     }
                 }
+                break;
             }
 
                 //以下为鼠标事件
@@ -208,6 +211,15 @@ private:
             case kCGEventLeftMouseUp: {
                 //鼠标左键释放
                 sendPointerEvent(self, 1, mouseLocation.x, mouseLocation.y, PointerEventType::RELEASE);
+                sendPointerEvent(self, 1, mouseLocation.x, mouseLocation.y, PointerEventType::CLICKED);
+
+                auto it = std::find(dragsCode.begin(), dragsCode.end(), 1);
+                if (it != dragsCode.end()) {
+                    //如果拖动列表中含有此按键，擦除并发送拖动完成事件
+                    long index = distance(dragsCode.begin(), it);
+                    dragsCode.erase(dragsCode.begin() + index, dragsCode.begin() + index + 1);
+                    sendPointerEvent(self, 1, mouseLocation.x, mouseLocation.y, PointerEventType::DRAGGED);
+                }
                 break;
             }
 
@@ -219,6 +231,14 @@ private:
             case kCGEventRightMouseUp: {
                 //右键释放
                 sendPointerEvent(self, 2, mouseLocation.x, mouseLocation.y, PointerEventType::RELEASE);
+                sendPointerEvent(self, 2, mouseLocation.x, mouseLocation.y, PointerEventType::CLICKED);
+                auto it = std::find(dragsCode.begin(), dragsCode.end(), 2);
+                if (it != dragsCode.end()) {
+                    //如果拖动列表中含有此按键，擦除并发送拖动完成事件
+                    long index = distance(dragsCode.begin(), it);
+                    dragsCode.erase(dragsCode.begin() + index, dragsCode.begin() + index + 1);
+                    sendPointerEvent(self, 2, mouseLocation.x, mouseLocation.y, PointerEventType::DRAGGED);
+                }
                 break;
             }
             case kCGEventMouseMoved: {
@@ -229,30 +249,45 @@ private:
             case kCGEventLeftMouseDragged: {
                 //左键拖动
                 sendPointerEvent(self, 1, mouseLocation.x, mouseLocation.y, PointerEventType::DRAG);
+                auto it = std::find(dragsCode.begin(), dragsCode.end(), 1);
+                if (it == dragsCode.end()) dragsCode.push_back(1);//拖动列表中不包含时加入
                 break;
             }
             case kCGEventRightMouseDragged: {
                 //右键拖动
                 sendPointerEvent(self, 2, mouseLocation.x, mouseLocation.y, PointerEventType::DRAG);
+                auto it = std::find(dragsCode.begin(), dragsCode.end(), 2);
+                if (it == dragsCode.end()) dragsCode.push_back(2);//拖动列表中不包含时加入
                 break;
             }
             case kCGEventScrollWheel: {
                 //可以发送滚动事件
+                sendWheelEvent(self, fixedPtDeltaX, fixedPtDeltaY, accumulatedDeltaX, accumulatedDeltaY,
+                               PointerWheelEventType::SCROLL);
                 //滚轮滚动
-                if (scrollPhase == kCGScrollPhaseBegan) {
-                    // 滚动开始
-                    accumulatedDeltaY = 0.0;
-                    accumulatedDeltaX = 0.0;
-                } else if (scrollPhase == kCGScrollPhaseChanged) {
-                    // 滚动变化
-                    accumulatedDeltaY += fixedPtDeltaY;
-                    accumulatedDeltaX += fixedPtDeltaX;
-                } else if (scrollPhase == kCGScrollPhaseEnded || scrollPhase == kCGMomentumScrollPhaseEnd) {
-                    // 滚动结束
-                    std::cout << "Y累计: " << accumulatedDeltaY << std::endl;
-                    std::cout << "X累计: " << accumulatedDeltaX << std::endl;
+                switch (scrollPhase) {
+                    case kCGScrollPhaseBegan: {
+                        // 滚动开始
+                        accumulatedDeltaY = 0.0;
+                        accumulatedDeltaX = 0.0;
+                        break;
+                    }
+                    case kCGScrollPhaseChanged:{
+                        // 滚动变化
+                        accumulatedDeltaY += fixedPtDeltaY;
+                        accumulatedDeltaX += fixedPtDeltaX;
+                        break;
+                    }
+                    case kCGScrollPhaseEnded:
+                    case kCGMomentumScrollPhaseEnd:{
+                        // 滚动结束
+                        sendWheelEvent(self, fixedPtDeltaX, fixedPtDeltaY, accumulatedDeltaX, accumulatedDeltaY,
+                                       PointerWheelEventType::SCROLLED);
+                        break;
+                    }
+                    default:
+                        break;
                 }
-
                 break;
             }
             case kCGEventNull://空事件，防止空指针，没用
@@ -268,19 +303,28 @@ private:
         return event; // 必须返回事件
     };
 
+    //发送键盘事件
     static void sendKeyEvent(GlobalScreen *s, int code, KeyboardEventType t) {
         auto e = KeyboardEvent(code, t);
         s->keyEventDispatcher.dispatchEvent(e);
     }
 
+    //发送指针事件（无需精确）
     static void sendPointerEvent(GlobalScreen *s, int code, int x, int y, PointerEventType t) {
         auto e = PointerEvent(code, x, y, t);
         s->pointerEventDispatcher.dispatchEvent(e);
     }
 
+    //发送指针事件
     static void sendPointerEvent(GlobalScreen *s, int code, double x, double y, PointerEventType t) {
         auto e = PointerEvent(code, x, y, t);
         s->pointerEventDispatcher.dispatchEvent(e);
+    }
+
+    //发送滚轮滚动事件
+    static void sendWheelEvent(GlobalScreen *s, double dx, double dy, double sx, double sy, PointerWheelEventType t) {
+        auto e = PointerWheelEvent(dx, dy, sx, sy, t);
+        s->wheelEventDispatcher.dispatchEvent(e);
     }
 };
 

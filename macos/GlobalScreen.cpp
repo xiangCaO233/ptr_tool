@@ -7,5 +7,5 @@ using namespace std;
 
 
 GlobalScreen GlobalScreen::globalScreenVal;
-vector<int> GlobalScreen::pressCode;
 vector<int> GlobalScreen::controlsCode;
+vector<int> GlobalScreen::dragsCode;

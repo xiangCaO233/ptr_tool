@@ -1,20 +1,19 @@
 #include <QApplication>
 #include <thread>
 #include <QPushButton>
-#include "Example.h"
 #include "macos/GlobalScreen.h"
 
 using namespace std;
 
 class KeyListener : public KeyboardListener {
     void onPress(const KeyboardEvent &e) override {
-//        cout << "event type->" << (int) e.getEventType() << endl;
-//        cout << "keyCode->" << e.getRawKeyCode() << "按了" << endl << endl;
+        cout << "event type->" << (int) e.getEventType() << endl;
+        cout << "keyCode->" << e.getRawKeyCode() << "按了" << endl << endl;
     }
 
     void onRelease(const KeyboardEvent &e) override {
-//        cout << "event type->" << (int) e.getEventType() << endl;
-//        cout << "keyCode->" << e.getRawKeyCode() << "释放" << endl << endl;
+        cout << "event type->" << (int) e.getEventType() << endl;
+        cout << "keyCode->" << e.getRawKeyCode() << "释放" << endl << endl;
     }
 
     void onPressed(const KeyboardEvent &e) override {
@@ -28,19 +27,25 @@ public:
     void onPress(const PointerEvent &e) override {
         cout << "event type->" << (int) e.getEventType() << endl;
         cout << "location->(x:" << e.getCoordinate().x<<", y:"<<e.getCoordinate().y<<")" << endl;
-        cout << "keyCode->" << e.getButton() << "按下" << endl << endl;
+        cout << "鼠标->" << e.getButton() << "按下" << endl << endl;
     }
 
     void onRelease(const PointerEvent &e) override {
-
+        cout << "event type->" << (int) e.getEventType() << endl;
+        cout << "location->(x:" << e.getCoordinate().x<<", y:"<<e.getCoordinate().y<<")" << endl;
+        cout << "鼠标->" << e.getButton() << "释放" << endl << endl;
     }
 
     void onDragged(const PointerEvent &e) override {
-
+        cout << "event type->" << (int) e.getEventType() << endl;
+        cout << "location->(x:" << e.getCoordinate().x<<", y:"<<e.getCoordinate().y<<")" << endl;
+        cout << "鼠标->" << e.getButton() << "拖动" << endl << endl;
     }
 
     void onClicked(const PointerEvent &e) override {
-
+        cout << "event type->" << (int) e.getEventType() << endl;
+        cout << "location->(x:" << e.getCoordinate().x<<", y:"<<e.getCoordinate().y<<")" << endl;
+        cout << "鼠标->" << e.getButton() << "点击" << endl << endl;
     }
 };
 
@@ -57,20 +62,30 @@ public:
     }
 };
 
-void start() {
-    GlobalScreen::startListen();
-}
+class MouseWheelListener: public PointerWheelListener{
+    void onScroll(const PointerWheelEvent &e) override {
+        cout<<"mouse scroll:[dx="<< e.getDx()<<", dy="<<e.getDy()<<", sumX="<<e.getSx()<<", sumY="<<e.getSy()<<")"<<endl<<endl;
+    }
+
+    void onScrolled(const PointerWheelEvent &e) override {
+        cout<<"mouse scrolled(complete):[dx="<< e.getDx()<<", dy="<<e.getDy()<<", sumX="<<e.getSx()<<", sumY="<<e.getSy()<<")"<<endl<<endl;
+    }
+};
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
+
+    GlobalScreen::startListen();
+
     auto l = KeyListener();
     auto l2 = MouseListener();
     auto l3 = MouseMotionListener();
-    GlobalScreen::startListen();
+    auto l4 = MouseWheelListener();
 
     GlobalScreen::globalScreenVal.addKeyListener(l);
     GlobalScreen::globalScreenVal.addPointerListener(l2);
     GlobalScreen::globalScreenVal.addPointerMotionListener(l3);
+    GlobalScreen::globalScreenVal.addPointerWheelListener(l4);
 
     return QApplication::exec();
 }

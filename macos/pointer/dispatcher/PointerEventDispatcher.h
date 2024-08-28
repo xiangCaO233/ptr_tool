@@ -48,7 +48,7 @@ public:
 
             case PointerEventType::DRAGGED: {
                 //类型为拖动完成
-
+                for (PointerListener *listener: pointerListeners) listener->onDragged(event);
                 break;
             }
 
