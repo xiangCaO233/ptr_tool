@@ -11,9 +11,11 @@
 class PointerEvent {
 public:
     //构造
-    PointerEvent(int rawCode,int x,int y, PointerEventType type) : button(rawCode), eventType(type), coordinate(x,y) {};
+    PointerEvent(int rawCode, int x, int y, PointerEventType type) : button(rawCode), eventType(type),
+                                                                     coordinate(x, y) {};
 
-    PointerEvent(int rawCode,double x,double y, PointerEventType type) : button(rawCode), eventType(type), coordinate(x,y) {};
+    PointerEvent(int rawCode, double x, double y, PointerEventType type) : button(rawCode), eventType(type),
+                                                                           coordinate(x, y) {};
 
     //虚析构（标记继承）
     virtual ~PointerEvent() = default;
@@ -42,4 +44,5 @@ private:
     //事件类型
     PointerEventType eventType;
 };
+
 #endif //PTR_TOOLS_POINTEREVENT_H

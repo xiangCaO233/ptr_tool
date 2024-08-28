@@ -87,5 +87,9 @@ int main(int argc, char *argv[]) {
     GlobalScreen::globalScreenVal.addPointerMotionListener(l3);
     GlobalScreen::globalScreenVal.addPointerWheelListener(l4);
 
+    GlobalScreen::globalScreenVal.removeKeyListener(l);
+    GlobalScreen::globalScreenVal.removePointerListener(l2);
+    GlobalScreen::globalScreenVal.removePointerMotionListener(l3);
+
     return QApplication::exec();
 }
