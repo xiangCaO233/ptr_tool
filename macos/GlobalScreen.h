@@ -72,16 +72,16 @@ private:
     static CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon);
 
     //发送键盘事件
-    static void sendKeyEvent(GlobalScreen *s, int code, KeyboardEventType t);
+    static void sendKeyEvent(GlobalScreen *s, int code,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, KeyboardEventType t);
 
     //发送指针事件（无需精确）
-    static void sendPointerEvent(GlobalScreen *s, int code, int x, int y, PointerEventType t);
+    static void sendPointerEvent(GlobalScreen *s, int code, int x, int y,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, PointerEventType t);
 
     //发送指针事件
-    static void sendPointerEvent(GlobalScreen *s, int code, double x, double y, PointerEventType t);
+    static void sendPointerEvent(GlobalScreen *s, int code, double x, double y,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, PointerEventType t);
 
     //发送滚轮滚动事件
-    static void sendWheelEvent(GlobalScreen *s, double dx, double dy, double sx, double sy, PointerWheelEventType t);
+    static void sendWheelEvent(GlobalScreen *s, double dx, double dy, double sx, double sy,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, PointerWheelEventType t);
 };
 
 #endif //PTR_TOOLS_GLOBALSCREEN_H

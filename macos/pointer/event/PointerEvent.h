@@ -11,11 +11,19 @@
 class PointerEvent {
 public:
     //构造
-    PointerEvent(int rawCode, int x, int y, PointerEventType type) : button(rawCode), eventType(type),
-                                                                     coordinate(x, y) {};
+    PointerEvent(
+            int rawCode, int x, int y,
+            bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown,
+            PointerEventType type)
+            : button(rawCode), eventType(type), coordinate(x, y),
+              isShift(isShiftDown), isControl(isControlDown), isOption(isOptionDown), isCommand(isCommandDown) {};
 
-    PointerEvent(int rawCode, double x, double y, PointerEventType type) : button(rawCode), eventType(type),
-                                                                           coordinate(x, y) {};
+    PointerEvent(
+            int rawCode, double x, double y,
+            bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown,
+            PointerEventType type)
+            : button(rawCode), eventType(type), coordinate(x, y),
+              isShift(isShiftDown), isControl(isControlDown), isOption(isOptionDown), isCommand(isCommandDown) {};
 
     //虚析构（标记继承）
     virtual ~PointerEvent() = default;
@@ -30,6 +38,14 @@ public:
         return coordinate;
     }
 
+    [[nodiscard]] bool isShiftDown() const { return isShift; };
+
+    [[nodiscard]] bool isControlDown() const { return isControl; };
+
+    [[nodiscard]] bool isOptionDown() const { return isOption; };
+
+    [[nodiscard]] bool isCommandDown() const { return isCommand; };
+
     //获取类型
     [[nodiscard]] PointerEventType getEventType() const {
         return eventType;
@@ -38,8 +54,11 @@ public:
 private:
     //鼠标按键
     int button;
-
     Coordinate<double> coordinate;
+    bool isShift;
+    bool isControl;
+    bool isOption;
+    bool isCommand;
 
     //事件类型
     PointerEventType eventType;

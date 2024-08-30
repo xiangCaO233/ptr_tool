@@ -12,7 +12,12 @@
 class KeyboardEvent {
 public:
     //构造
-    KeyboardEvent(int rawCode, KeyboardEventType type) : raw_keycode(rawCode), eventType(type) {};
+    KeyboardEvent(
+            int rawCode,
+            bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown,
+            KeyboardEventType type)
+            : raw_keycode(rawCode), eventType(type),
+              isShift(isShiftDown), isControl(isControlDown), isOption(isOptionDown), isCommand(isCommandDown) {};
 
     //虚析构（标记继承）
     virtual ~KeyboardEvent() = default;
@@ -22,6 +27,14 @@ public:
         return raw_keycode;
     }
 
+    [[nodiscard]] bool isShiftDown() const { return isShift; };
+
+    [[nodiscard]] bool isControlDown() const { return isControl; };
+
+    [[nodiscard]] bool isOptionDown() const { return isOption; };
+
+    [[nodiscard]] bool isCommandDown() const { return isCommand; };
+
     //获取类型
     [[nodiscard]] KeyboardEventType getEventType() const {
         return eventType;
@@ -30,6 +43,10 @@ public:
 private:
     //原始键值
     int raw_keycode;
+    bool isShift;
+    bool isControl;
+    bool isOption;
+    bool isCommand;
 
     //事件类型
     KeyboardEventType eventType;
