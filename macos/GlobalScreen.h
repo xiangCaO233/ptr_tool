@@ -6,6 +6,7 @@
 #define PTR_TOOLS_GLOBALSCREEN_H
 
 #include <ApplicationServices/ApplicationServices.h>
+#include "keyboard/KeyMaps.h"
 #include "keyboard/dispatcher/KeyEventDispatcher.h"
 #include "pointer/dispatcher/PointerEventDispatcher.h"
 #include "pointer/dispatcher/WheelEventDispatcher.h"
@@ -51,6 +52,11 @@ public:
     //删除鼠标指针监听器
     void removePointerWheelListener(PointerWheelListener &listener);
 
+    //模拟鼠标点击
+    static void clickedMouse(CGPoint &point, CGMouseButton &button, long timeContinued);
+
+    static void moveMouse(CGPoint &point);
+
 private:
     //滚轮滚动事件分派器
     WheelEventDispatcher wheelEventDispatcher;
@@ -72,16 +78,28 @@ private:
     static CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon);
 
     //发送键盘事件
-    static void sendKeyEvent(GlobalScreen *s, int code,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, KeyboardEventType t);
+    static void
+    sendKeyEvent(GlobalScreen *s, int code, bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown,
+                 KeyboardEventType t);
 
     //发送指针事件（无需精确）
-    static void sendPointerEvent(GlobalScreen *s, int code, int x, int y,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, PointerEventType t);
+    static void
+    sendPointerEvent(GlobalScreen *s, int code, int x, int y, bool isShiftDown, bool isControlDown, bool isOptionDown,
+                     bool isCommandDown, PointerEventType t);
 
     //发送指针事件
-    static void sendPointerEvent(GlobalScreen *s, int code, double x, double y,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, PointerEventType t);
+    static void sendPointerEvent(GlobalScreen *s, int code, double x, double y, bool isShiftDown, bool isControlDown,
+                                 bool isOptionDown, bool isCommandDown, PointerEventType t);
 
     //发送滚轮滚动事件
-    static void sendWheelEvent(GlobalScreen *s, double dx, double dy, double sx, double sy,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, PointerWheelEventType t);
+    static void
+    sendWheelEvent(GlobalScreen *s, double dx, double dy, double sx, double sy, bool isShiftDown, bool isControlDown,
+                   bool isOptionDown, bool isCommandDown, PointerWheelEventType t);
+
+    //触发鼠标事件
+    static void triggerMouse(CGEventType mouseEventType, CGPoint &point, CGMouseButton button);
+
+
 };
 
 #endif //PTR_TOOLS_GLOBALSCREEN_H

@@ -14,10 +14,10 @@ public:
     //构造
     KeyboardEvent(
             int rawCode,
-            bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown,
+            bool isShiftDown, bool isControlDown, bool isAltDown, bool isCommandDown,
             KeyboardEventType type)
             : raw_keycode(rawCode), eventType(type),
-              isShift(isShiftDown), isControl(isControlDown), isOption(isOptionDown), isCommand(isCommandDown) {};
+              isShift(isShiftDown), isControl(isControlDown), isAlt(isAltDown), isCommand(isCommandDown) {};
 
     //虚析构（标记继承）
     virtual ~KeyboardEvent() = default;
@@ -31,7 +31,7 @@ public:
 
     [[nodiscard]] bool isControlDown() const { return isControl; };
 
-    [[nodiscard]] bool isOptionDown() const { return isOption; };
+    [[nodiscard]] bool isAltDown() const { return isAlt; };
 
     [[nodiscard]] bool isCommandDown() const { return isCommand; };
 
@@ -45,7 +45,7 @@ private:
     int raw_keycode;
     bool isShift;
     bool isControl;
-    bool isOption;
+    bool isAlt;
     bool isCommand;
 
     //事件类型

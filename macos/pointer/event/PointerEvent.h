@@ -13,17 +13,17 @@ public:
     //构造
     PointerEvent(
             int rawCode, int x, int y,
-            bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown,
+            bool isShiftDown, bool isControlDown, bool isAltDown, bool isCommandDown,
             PointerEventType type)
             : button(rawCode), eventType(type), coordinate(x, y),
-              isShift(isShiftDown), isControl(isControlDown), isOption(isOptionDown), isCommand(isCommandDown) {};
+              isShift(isShiftDown), isControl(isControlDown), isAlt(isAltDown), isCommand(isCommandDown) {};
 
     PointerEvent(
             int rawCode, double x, double y,
             bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown,
             PointerEventType type)
             : button(rawCode), eventType(type), coordinate(x, y),
-              isShift(isShiftDown), isControl(isControlDown), isOption(isOptionDown), isCommand(isCommandDown) {};
+              isShift(isShiftDown), isControl(isControlDown), isAlt(isOptionDown), isCommand(isCommandDown) {};
 
     //虚析构（标记继承）
     virtual ~PointerEvent() = default;
@@ -42,7 +42,7 @@ public:
 
     [[nodiscard]] bool isControlDown() const { return isControl; };
 
-    [[nodiscard]] bool isOptionDown() const { return isOption; };
+    [[nodiscard]] bool isAltDown() const { return isAlt; };
 
     [[nodiscard]] bool isCommandDown() const { return isCommand; };
 
@@ -57,7 +57,7 @@ private:
     Coordinate<double> coordinate;
     bool isShift;
     bool isControl;
-    bool isOption;
+    bool isAlt;
     bool isCommand;
 
     //事件类型

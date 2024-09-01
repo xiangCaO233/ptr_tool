@@ -12,10 +12,10 @@ public:
     //构造
     PointerWheelEvent(
             double deltaX, double deltaY, double sumX, double sumY,
-            bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown,
+            bool isShiftDown, bool isControlDown, bool isAltDown, bool isCommandDown,
             PointerWheelEventType eventType)
             : dx(deltaX), dy(deltaY), sx(sumX), sy(sumY), type(eventType),
-              isShift(isShiftDown), isControl(isControlDown), isOption(isOptionDown), isCommand(isCommandDown) {};
+              isShift(isShiftDown), isControl(isControlDown), isAlt(isAltDown), isCommand(isCommandDown) {};
 
     //虚析构（标记继承）
     virtual ~PointerWheelEvent() = default;
@@ -40,7 +40,7 @@ public:
 
     [[nodiscard]] bool isControlDown() const { return isControl; };
 
-    [[nodiscard]] bool isOptionDown() const { return isOption; };
+    [[nodiscard]] bool isAltDown() const { return isAlt; };
 
     [[nodiscard]] bool isCommandDown() const { return isCommand; };
 
@@ -59,7 +59,7 @@ private:
     double sy;
     bool isShift;
     bool isControl;
-    bool isOption;
+    bool isAlt;
     bool isCommand;
 
     PointerWheelEventType type;

@@ -104,24 +104,28 @@ void GlobalScreen::open() {
     globalScreenVal.init();
 }
 
-void GlobalScreen::sendKeyEvent(GlobalScreen *s, int code,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, KeyboardEventType t) {
-    auto e = KeyboardEvent(code,isShiftDown,isControlDown,isOptionDown,isCommandDown, t);
+void GlobalScreen::sendKeyEvent(GlobalScreen *s, int code, bool isShiftDown, bool isControlDown, bool isOptionDown,
+                                bool isCommandDown, KeyboardEventType t) {
+    auto e = KeyboardEvent(code, isShiftDown, isControlDown, isOptionDown, isCommandDown, t);
     s->keyEventDispatcher.dispatchEvent(e);
 }
 
-void GlobalScreen::sendPointerEvent(GlobalScreen *s, int code, int x, int y,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, PointerEventType t) {
-    auto e = PointerEvent(code, x, y,isShiftDown,isControlDown,isOptionDown,isCommandDown, t);
+void GlobalScreen::sendPointerEvent(GlobalScreen *s, int code, int x, int y, bool isShiftDown, bool isControlDown,
+                                    bool isOptionDown, bool isCommandDown, PointerEventType t) {
+    auto e = PointerEvent(code, x, y, isShiftDown, isControlDown, isOptionDown, isCommandDown, t);
     s->pointerEventDispatcher.dispatchEvent(e);
 }
 
-void GlobalScreen::sendPointerEvent(GlobalScreen *s, int code, double x, double y,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, PointerEventType t) {
-    auto e = PointerEvent(code, x, y,isShiftDown,isControlDown,isOptionDown,isCommandDown, t);
+void GlobalScreen::sendPointerEvent(GlobalScreen *s, int code, double x, double y, bool isShiftDown, bool isControlDown,
+                                    bool isOptionDown, bool isCommandDown, PointerEventType t) {
+    auto e = PointerEvent(code, x, y, isShiftDown, isControlDown, isOptionDown, isCommandDown, t);
     s->pointerEventDispatcher.dispatchEvent(e);
 }
 
 void
-GlobalScreen::sendWheelEvent(GlobalScreen *s, double dx, double dy, double sx, double sy,bool isShiftDown, bool isControlDown, bool isOptionDown, bool isCommandDown, PointerWheelEventType t) {
-    auto e = PointerWheelEvent(dx, dy, sx, sy,isShiftDown,isControlDown,isOptionDown,isCommandDown, t);
+GlobalScreen::sendWheelEvent(GlobalScreen *s, double dx, double dy, double sx, double sy, bool isShiftDown,
+                             bool isControlDown, bool isOptionDown, bool isCommandDown, PointerWheelEventType t) {
+    auto e = PointerWheelEvent(dx, dy, sx, sy, isShiftDown, isControlDown, isOptionDown, isCommandDown, t);
     s->wheelEventDispatcher.dispatchEvent(e);
 }
 
@@ -146,21 +150,20 @@ CGEventRef GlobalScreen::eventCallback(CGEventTapProxy proxy, CGEventType type, 
         case kCGEventKeyDown: {
             //按键按下
             sendKeyEvent(self, keyCode,
-                         flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                         flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                         , KeyboardEventType::PRESS);
+                         flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                         flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand, KeyboardEventType::PRESS);
             break;
         }
         case kCGEventKeyUp: {
             //按键释放
             sendKeyEvent(self, keyCode,
-                         flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                         flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                    , KeyboardEventType::RELEASE);
+                         flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                         flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                         KeyboardEventType::RELEASE);
             sendKeyEvent(self, keyCode,
-                         flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                         flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                         , KeyboardEventType::PRESSED);
+                         flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                         flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                         KeyboardEventType::PRESSED);
         }
         case kCGEventFlagsChanged: {
             //控制键状态改变
@@ -171,9 +174,9 @@ CGEventRef GlobalScreen::eventCallback(CGEventTapProxy proxy, CGEventType type, 
                     ) {
                 //发送按下事件
                 sendKeyEvent(self, keyCode,
-                             flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                             flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                             , KeyboardEventType::PRESS);
+                             flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                             flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                             KeyboardEventType::PRESS);
                 //添加到按下列表
                 controlsCode.push_back(keyCode);
             } else {
@@ -185,13 +188,13 @@ CGEventRef GlobalScreen::eventCallback(CGEventTapProxy proxy, CGEventType type, 
                     long index = distance(controlsCode.begin(), it);
                     controlsCode.erase(controlsCode.begin() + index, controlsCode.begin() + index + 1);
                     sendKeyEvent(self, keyCode,
-                                 flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                                 flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                                 , KeyboardEventType::RELEASE);
+                                 flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                                 flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                                 KeyboardEventType::RELEASE);
                     sendKeyEvent(self, keyCode,
-                                 flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                                 flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                                 , KeyboardEventType::PRESSED);
+                                 flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                                 flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                                 KeyboardEventType::PRESSED);
                 }
             }
             break;
@@ -201,22 +204,22 @@ CGEventRef GlobalScreen::eventCallback(CGEventTapProxy proxy, CGEventType type, 
         case kCGEventLeftMouseDown: {
             //鼠标左键按下 code set 1
             sendPointerEvent(self, 1, mouseLocation.x, mouseLocation.y,
-                             flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                             flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                             , PointerEventType::PRESS);
+                             flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                             flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                             PointerEventType::PRESS);
             break;
         }
 
         case kCGEventLeftMouseUp: {
             //鼠标左键释放
             sendPointerEvent(self, 1, mouseLocation.x, mouseLocation.y,
-                             flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                             flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                             , PointerEventType::RELEASE);
+                             flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                             flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                             PointerEventType::RELEASE);
             sendPointerEvent(self, 1, mouseLocation.x, mouseLocation.y,
-                             flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                             flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                             , PointerEventType::CLICKED);
+                             flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                             flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                             PointerEventType::CLICKED);
 
             auto it = std::find(dragsCode.begin(), dragsCode.end(), 1);
             if (it != dragsCode.end()) {
@@ -224,9 +227,9 @@ CGEventRef GlobalScreen::eventCallback(CGEventTapProxy proxy, CGEventType type, 
                 long index = distance(dragsCode.begin(), it);
                 dragsCode.erase(dragsCode.begin() + index, dragsCode.begin() + index + 1);
                 sendPointerEvent(self, 1, mouseLocation.x, mouseLocation.y,
-                                 flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                                 flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                                 , PointerEventType::DRAGGED);
+                                 flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                                 flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                                 PointerEventType::DRAGGED);
             }
             break;
         }
@@ -234,47 +237,47 @@ CGEventRef GlobalScreen::eventCallback(CGEventTapProxy proxy, CGEventType type, 
         case kCGEventRightMouseDown: {
             //鼠标右键按下 code set 2
             sendPointerEvent(self, 2, mouseLocation.x, mouseLocation.y,
-                             flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                             flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                             , PointerEventType::PRESS);
+                             flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                             flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                             PointerEventType::PRESS);
             break;
         }
         case kCGEventRightMouseUp: {
             //右键释放
             sendPointerEvent(self, 2, mouseLocation.x, mouseLocation.y,
-                             flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                             flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                             , PointerEventType::RELEASE);
+                             flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                             flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                             PointerEventType::RELEASE);
             sendPointerEvent(self, 2, mouseLocation.x, mouseLocation.y,
-                             flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                             flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                             , PointerEventType::CLICKED);
+                             flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                             flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                             PointerEventType::CLICKED);
             auto it = std::find(dragsCode.begin(), dragsCode.end(), 2);
             if (it != dragsCode.end()) {
                 //如果拖动列表中含有此按键，擦除并发送拖动完成事件
                 long index = distance(dragsCode.begin(), it);
                 dragsCode.erase(dragsCode.begin() + index, dragsCode.begin() + index + 1);
                 sendPointerEvent(self, 2, mouseLocation.x, mouseLocation.y,
-                                 flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                                 flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                                 , PointerEventType::DRAGGED);
+                                 flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                                 flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                                 PointerEventType::DRAGGED);
             }
             break;
         }
         case kCGEventMouseMoved: {
             //鼠标移动
             sendPointerEvent(self, 0, mouseLocation.x, mouseLocation.y,
-                             flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                             flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                             , PointerEventType::MOVE);
+                             flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                             flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                             PointerEventType::MOVE);
             break;
         }
         case kCGEventLeftMouseDragged: {
             //左键拖动
             sendPointerEvent(self, 1, mouseLocation.x, mouseLocation.y,
-                             flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                             flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                             , PointerEventType::DRAG);
+                             flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                             flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                             PointerEventType::DRAG);
             auto it = std::find(dragsCode.begin(), dragsCode.end(), 1);
             if (it == dragsCode.end()) dragsCode.push_back(1);//拖动列表中不包含时加入
             break;
@@ -282,9 +285,9 @@ CGEventRef GlobalScreen::eventCallback(CGEventTapProxy proxy, CGEventType type, 
         case kCGEventRightMouseDragged: {
             //右键拖动
             sendPointerEvent(self, 2, mouseLocation.x, mouseLocation.y,
-                             flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                             flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                             , PointerEventType::DRAG);
+                             flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                             flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                             PointerEventType::DRAG);
             auto it = std::find(dragsCode.begin(), dragsCode.end(), 2);
             if (it == dragsCode.end()) dragsCode.push_back(2);//拖动列表中不包含时加入
             break;
@@ -292,9 +295,9 @@ CGEventRef GlobalScreen::eventCallback(CGEventTapProxy proxy, CGEventType type, 
         case kCGEventScrollWheel: {
             //可以发送滚动事件
             sendWheelEvent(self, fixedPtDeltaX, fixedPtDeltaY, accumulatedDeltaX, accumulatedDeltaY,
-                           flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                           flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                           ,PointerWheelEventType::SCROLL);
+                           flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                           flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                           PointerWheelEventType::SCROLL);
             //滚轮滚动
             switch (scrollPhase) {
                 case kCGScrollPhaseBegan: {
@@ -313,9 +316,9 @@ CGEventRef GlobalScreen::eventCallback(CGEventTapProxy proxy, CGEventType type, 
                 case kCGMomentumScrollPhaseEnd: {
                     // 滚动结束
                     sendWheelEvent(self, fixedPtDeltaX, fixedPtDeltaY, accumulatedDeltaX, accumulatedDeltaY,
-                                   flags & kCGEventFlagMaskShift,flags & kCGEventFlagMaskControl,
-                                   flags & kCGEventFlagMaskAlternate,flags & kCGEventFlagMaskCommand
-                                   ,PointerWheelEventType::SCROLLED);
+                                   flags & kCGEventFlagMaskShift, flags & kCGEventFlagMaskControl,
+                                   flags & kCGEventFlagMaskAlternate, flags & kCGEventFlagMaskCommand,
+                                   PointerWheelEventType::SCROLLED);
                     break;
                 }
                 default:
@@ -334,6 +337,31 @@ CGEventRef GlobalScreen::eventCallback(CGEventTapProxy proxy, CGEventType type, 
             break;
     }
     return event; // 必须返回事件
+}
+
+void GlobalScreen::clickedMouse(CGPoint &point, CGMouseButton &button, long timeContinued) {
+    triggerMouse(kCGEventLeftMouseDown, point, button);
+    if (timeContinued)
+        usleep(timeContinued); // 睡眠
+    triggerMouse(kCGEventLeftMouseUp, point, button);
+}
+
+void GlobalScreen::moveMouse(CGPoint &point) {
+    triggerMouse(kCGEventMouseMoved, point, kCGMouseButtonLeft);
+}
+
+void GlobalScreen::triggerMouse(CGEventType mouseEventType, CGPoint &point, CGMouseButton button) {
+    // 创建一个鼠标事件
+    CGEventRef event = CGEventCreateMouseEvent(
+            nullptr, // NULL = kCGNullDirectDisplay
+            mouseEventType, // 鼠标移动事件
+            point,
+            button // 鼠标按键
+    );
+    // 发送鼠标事件
+    CGEventPost(kCGHIDEventTap, event);
+    // 释放事件对象
+    CFRelease(event);
 }
 
 
