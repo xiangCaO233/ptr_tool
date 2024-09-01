@@ -141,6 +141,12 @@ int main(int argc, char *argv[]) {
     GlobalScreen::globalScreenVal.addPointerListener(l2);
     GlobalScreen::globalScreenVal.addPointerMotionListener(l3);
     GlobalScreen::globalScreenVal.addPointerWheelListener(l4);
+
+    usleep(1000*1000);//1s
+    CGPoint p;
+    p.x = 1000;
+    p.y = 20;
+    GlobalScreen::moveMouse(p);
 //    GlobalScreen::globalScreenVal.removeKeyListener(l);
 //    GlobalScreen::globalScreenVal.removePointerListener(l2);
 //    GlobalScreen::globalScreenVal.removePointerMotionListener(l3);
