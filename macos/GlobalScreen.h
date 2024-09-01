@@ -52,10 +52,26 @@ public:
     //删除鼠标指针监听器
     void removePointerWheelListener(PointerWheelListener &listener);
 
+    //模拟鼠标按下
+    static void pressMouse(CGMouseButton &button);
+
+    //模拟鼠标释放
+    static void releaseMouse(CGMouseButton &button);
+
     //模拟鼠标点击
     static void clickedMouse(CGPoint &point, CGMouseButton &button, long timeContinued);
 
+    //模拟鼠标移动
     static void moveMouse(CGPoint &point);
+
+    //模拟键盘按下
+    static void pressKey(CGKeyCode keyCode);
+
+    //模拟键盘释放
+    static void releaseKey(CGKeyCode keyCode);
+
+    ////模拟键盘输入
+    static void inputKey(CGKeyCode keyCode, long timeContinue);
 
 private:
     //滚轮滚动事件分派器
@@ -98,6 +114,9 @@ private:
 
     //触发鼠标事件
     static void triggerMouse(CGEventType mouseEventType, CGPoint &point, CGMouseButton button);
+
+    //触发键盘事件
+    static void triggerKeyboard(int keyCode,bool keyDown);
 
 
 };

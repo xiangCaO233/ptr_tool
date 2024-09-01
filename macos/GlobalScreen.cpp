@@ -339,15 +339,29 @@ CGEventRef GlobalScreen::eventCallback(CGEventTapProxy proxy, CGEventType type, 
     return event; // 必须返回事件
 }
 
+void GlobalScreen::pressMouse(CGMouseButton &button) {
+    CGPoint current = CGEventGetLocation(CGEventCreate(nullptr));
+    triggerMouse(kCGEventLeftMouseDown, current, button);
+}
+
+void GlobalScreen::releaseMouse(CGMouseButton &button) {
+    CGPoint current = CGEventGetLocation(CGEventCreate(nullptr));
+    triggerMouse(kCGEventLeftMouseUp, current, button);
+}
+
 void GlobalScreen::clickedMouse(CGPoint &point, CGMouseButton &button, long timeContinued) {
     triggerMouse(kCGEventLeftMouseDown, point, button);
     if (timeContinued)
-        usleep(timeContinued); // 睡眠
+        usleep(timeContinued*1000); // 睡眠
     triggerMouse(kCGEventLeftMouseUp, point, button);
 }
 
 void GlobalScreen::moveMouse(CGPoint &point) {
     triggerMouse(kCGEventMouseMoved, point, kCGMouseButtonLeft);
+}
+
+void GlobalScreen::pressKey(CGKeyCode keyCode) {
+    triggerKeyboard(keyCode, true);
 }
 
 void GlobalScreen::triggerMouse(CGEventType mouseEventType, CGPoint &point, CGMouseButton button) {
@@ -363,6 +377,35 @@ void GlobalScreen::triggerMouse(CGEventType mouseEventType, CGPoint &point, CGMo
     // 释放事件对象
     CFRelease(event);
 }
+
+void GlobalScreen::triggerKeyboard(int keyCode, bool keyDown) {
+    // 创建一个键盘事件
+    CGEventRef keyEvent = CGEventCreateKeyboardEvent(
+            nullptr, //kCGNullDirectDisplay
+            static_cast<CGKeyCode>(keyCode),
+            keyDown //是否按下
+    );
+    // 发送键盘事件
+    CGEventPost(kCGHIDEventTap, keyEvent);
+    // 释放事件对象
+    CFRelease(keyEvent);
+}
+
+void GlobalScreen::releaseKey(CGKeyCode keyCode) {
+    triggerKeyboard(keyCode, false);
+}
+
+void GlobalScreen::inputKey(CGKeyCode keyCode, long timeContinue) {
+    pressKey(keyCode);
+    if (timeContinue)
+        usleep(timeContinue*1000);
+    releaseKey(keyCode);
+}
+
+
+
+
+
 
 
 
