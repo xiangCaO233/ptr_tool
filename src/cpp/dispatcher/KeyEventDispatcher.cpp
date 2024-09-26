@@ -12,6 +12,17 @@ void KeyEventDispatcher::addListener(KeyListener *listener) {
 // 移除监听器
 void KeyEventDispatcher::removeListener(KeyListener *listener) {
   // listeners.erase(listener);
+  int i = 0;
+  for (; i < listeners.size(); i++) {
+    if (listener == listeners[i])
+      break;
+  }
+  if (i < listeners.size()) {
+    listeners.erase(listeners.begin() + i);
+    for (int j = i + 1; j < listeners.size(); j++) {
+      listeners[j - 1] = listeners[j];
+    }
+  }
 }
 // 分派事件
 void KeyEventDispatcher::dispachEvent(const KeyEvent &event) {

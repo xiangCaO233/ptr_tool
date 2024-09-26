@@ -1,6 +1,7 @@
 #include "../headers/GlobalScreen.h"
 #include "listener/KeyListener.h"
 #include <QApplication>
+#include <iostream>
 #include <ostream>
 #include <unistd.h>
 
@@ -34,6 +35,8 @@ int main(int argc, char *argv[]) {
   auto l2 = new MyMouseListener;
   GlobalScreen::addKeyListener(l);
   GlobalScreen::addMouseListener(l2);
+
+  GlobalScreen::removeMouseListener(l2);
 
   return app.exec();
 }

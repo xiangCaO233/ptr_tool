@@ -10,6 +10,17 @@ void MouseEventDispatcher::addListener(MouseListener *listener) {
 // 移除监听器
 void MouseEventDispatcher::removeListener(MouseListener *listener) {
   //
+  int i = 0;
+  for (; i < listeners.size(); i++) {
+    if (listener == listeners[i])
+      break;
+  }
+  if (i < listeners.size()) {
+    listeners.erase(listeners.begin() + i);
+    for (int j = i + 1; j < listeners.size(); j++) {
+      listeners[j - 1] = listeners[j];
+    }
+  }
 }
 // 分派事件
 void MouseEventDispatcher::dispatchEvent(const MouseEvent &e) {
